@@ -5,6 +5,10 @@ const { jwtSecret, jwtExpiration } = require('../config/jwtConfig');
 const User = require('../models/User');
 
 exports.signup = async (req, res) => {
+    console.log(req.body); // Debugging line
+    if (!req.body) {
+        return res.status(400).json({ error: 'Request body is missing' });
+    }
     const { username, email, password, flatcode } = req.body;
     try {
         const hashedPassword = await bycrypt.hash(password, 10);
