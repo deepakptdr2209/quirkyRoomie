@@ -2,6 +2,7 @@ const express = require('express');
 const connectDB = require('./config/db');
 const authRoute = require('./routes/authRoute');
 const complaintRoute = require('./routes/complaintRoute');
+const voteRoute = require('./routes/votingRoute');
 require('dotenv').config();
 const app = express();
 app.use(express.json()); 
@@ -9,7 +10,9 @@ app.use(express.urlencoded({ extended: true }));
 // route for signup and login
 app.use("/api/auth", authRoute);
 // complaint route
-app.use('/api/comlaint', complaintRoute);
+app.use('/api/complaint', complaintRoute);
+// voting route
+app.use('/api/votes', voteRoute )
 
 const startServer = async () => {
     try {

@@ -1,15 +1,20 @@
 const jwt = require('jsonwebtoken');
 const { jwtSecret } = require('../config/jwtConfig');
 const authMiddleware = (req, res, next) => {
-    const token =  req.header('Authorization')?.replace('Bearer ', '');
+    const token =  req.header('Authorization')?.split(" ")[1];
+    
+   
     if(!token){
-        return res.status(401),json({
+        console.log('No token');
+        return res.status(401).json({
             message : "Access denied"
         });
     }
     try {
         const decoded = jwt.verify(token, jwtSecret);
-        req.userId = decoded.userId;
+        
+        req.user = decoded;
+        
         next();
     } catch (error) {
         return res.status(401).json({

@@ -1,5 +1,5 @@
 const mongoose = require('mongoose');
-const User = require('./User');
+
 // Complaint Schema
 const complaintSchema = new mongoose.Schema({
   title: {
@@ -23,15 +23,25 @@ const complaintSchema = new mongoose.Schema({
     type: Date,
     default: Date.now 
   },
-  flatCode: {
+  flatcode: {
     type: String, 
     required: true
+  },
+  votes: {
+    upvote: { type: Number, default: 0 },
+    downvote: { type: Number, default: 0 }
   },
   userId: {
     type: mongoose.Schema.Types.ObjectId, 
     ref: 'User', 
     required: true
-  }
+  },
+  againstUserId: { 
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'User', 
+    required: true 
+  }, // Against whom the complaint is filed
+  
 });
 
 
