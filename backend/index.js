@@ -3,8 +3,11 @@ const connectDB = require('./config/db');
 const authRoute = require('./routes/authRoute');
 const complaintRoute = require('./routes/complaintRoute');
 const voteRoute = require('./routes/votingRoute');
+const cors = require('cors');
 require('dotenv').config();
+
 const app = express();
+app.use(cors());
 app.use(express.json()); 
 app.use(express.urlencoded({ extended: true }));
 // route for signup and login
