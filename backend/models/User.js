@@ -4,7 +4,6 @@ const userSchema = new mongoose.Schema({
     username: {
         type: String,
         required: true,
-        unique: true,
         trim: true
     },
     email: {
@@ -26,6 +25,8 @@ const userSchema = new mongoose.Schema({
         default: Date.now
     }
 });
+userSchema.index({ username: 1, flatcode: 1 }, { unique: true });
+
 
 const User = mongoose.model('User', userSchema);
 

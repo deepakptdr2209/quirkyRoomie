@@ -11,6 +11,10 @@ exports.signup = async (req, res) => {
     }
     const { username, email, password, flatcode } = req.body;
     try {
+        const existingUser = await User.findOne({ email });
+        if (existingUser) {
+            return res.status(400).json({ message: "Email already registered" });
+        }
         const hashedPassword = await bycrypt.hash(password, 10);
         const newUser = new User({
             username,
@@ -25,7 +29,11 @@ exports.signup = async (req, res) => {
             { expiresIn : jwtExpiration});
             res.status(201).json({token});
     } catch (error) {
-        res.status(500).json({ message: 'Internal server error' });
+        if (error.code === 11000) {
+            return res.status(400).json({ message: "User with this name already exists in this flat." });
+        }
+        console.error("Signup Error:", error);
+        res.status(500).json({ message: "Internal Server Error" });
     }
 }
 

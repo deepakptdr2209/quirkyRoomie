@@ -1,12 +1,15 @@
 const express = require('express');
 const connectDB = require('./config/db');
 const authRoute = require('./routes/authRoute');
+const complaintRoute = require('./routes/complaintRoute');
 require('dotenv').config();
 const app = express();
 app.use(express.json()); 
 app.use(express.urlencoded({ extended: true }));
 // route for signup and login
 app.use("/api/auth", authRoute);
+// complaint route
+app.use('/api/comlaint', complaintRoute);
 
 const startServer = async () => {
     try {
