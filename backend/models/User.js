@@ -23,7 +23,11 @@ const userSchema = new mongoose.Schema({
     createdAt: {
         type: Date,
         default: Date.now
-    }
+    },
+    karmaPoints: {
+        type: Number,
+        default: 0
+    },
 });
 userSchema.index({ username: 1, flatcode: 1 }, { unique: true });
 
