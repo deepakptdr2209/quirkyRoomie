@@ -8,7 +8,7 @@ exports.signup = async (req, res) => {
     if (!req.body) {
         return res.status(400).json({ error: 'Request body is missing' });
     }
-    const { username, email, password, flatcode } = req.body;
+    const { username, email, password, flatCode } = req.body;
     try {
         const existingUser = await User.findOne({ email });
         if (existingUser) {
@@ -19,7 +19,7 @@ exports.signup = async (req, res) => {
             username,
             email,
             password: hashedPassword,
-            flatcode
+            flatCode
         });
           const user = await newUser.save();
           if(user){
@@ -32,7 +32,7 @@ exports.signup = async (req, res) => {
                 userId: user._id,
                 username: user.username,
                 email: user.email,
-                flatcode: user.flatcode,
+                flatCode: user.flatCode,
                 karmaPoints: user.karmaPoints,
                 token: token
             })
@@ -67,7 +67,7 @@ exports.login = async (req, res) => {
             userId: user._id,
             username: user.username,
             email: user.email,
-            flatcode: user.flatcode,
+            flatCode: user.flatCode,
             karmaPoints: user.karmaPoints,
             token: token
          });
@@ -80,7 +80,8 @@ exports.login = async (req, res) => {
 
  exports.profile = async (req, res) => {
     try {
-        const user = await User.findById(req.user._id);
+        console.log("user details are :" , req.user);
+        const user = await User.findById(req.user.userId);
         if (!user) {
             return res.status(404).json({ message: "User not found" });
         }
@@ -88,7 +89,7 @@ exports.login = async (req, res) => {
             userId: user._id,
             username: user.username,
             email: user.email,
-            flatcode: user.flatcode,
+            flatCode: user.flatCode,
             karmaPoints: user.karmaPoints
         });
 

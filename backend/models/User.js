@@ -16,7 +16,7 @@ const userSchema = new mongoose.Schema({
         type: String,
         required: true
     },
-    flatcode:{
+    flatCode:{
         type: String,
         required: true
     },
@@ -28,7 +28,6 @@ const userSchema = new mongoose.Schema({
 },
     {timeStamps: true},
 );
-userSchema.index({ username: 1, flatcode: 1 }, { unique: true });
 
 
 const User = mongoose.model('User', userSchema);

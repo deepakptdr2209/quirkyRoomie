@@ -1,4 +1,4 @@
-import asyncHandler from 'express-async-handler';
+const asyncHandler = require('express-async-handler');
 const Complaints = require('../models/Complaints');
 const User = require('../models/User');
 const { punishmentSuggestions } = require('../data/punishmentSuggestion');
@@ -10,20 +10,20 @@ exports.createComplaint = async (req, res) =>{
         return res.status(401).json({ message: "User not authenticated" });
     }
 
-      const userId = req.user.userId;
+      const createdBy = req.user.userId;
      
-     const { title, description, flatcode, timestamp, complaintType, severity,againstUserId } = req.body;
-     if (!title || !description || !complaintType || !severity || !againstUserId) {
+     const { title, description, flatCode, timestamp, type, severity } = req.body;
+     if (!title || !description || !type || !severity || !createdBy) {
         return res.status(400).json({ message: 'All fields are required' });
     };
     const newComplaint = new Complaints({
         title,
         description,
-        userId,
-        againstUserId,
-        flatcode,
+       
+        createdBy,
+        flatCode,
         severity,
-        complaintType,
+        type,
         timestamp
     });
     await newComplaint.save();
@@ -37,17 +37,18 @@ exports.createComplaint = async (req, res) =>{
    };
 }
 exports.getComplaints = asyncHandler(async (req, res) => {
-    const complaints = await Complaint.find({ flatCode: req.user.flatCode })
-      .populate('createdBy', 'name')
-      .sort('-createdAt');
-  
-    res.json(complaints);
-  });    
+  const complaints = await Complaints.find({ flatCode: req.user.flatCode })
+    .populate('createdBy', 'name')
+    .sort('-createdAt');
+
+  res.json(complaints);
+});
 
 // @desc    Update complaint (upvote/downvote)
 // @route   PUT /api/complaints/:id/vote
 // @access  Private
 exports.voteComplaint = asyncHandler(async (req, res) => {
+  try {
     const { action } = req.body; // 'upvote' or 'downvote'
     const complaint = await Complaints.findById(req.params.id);
   
@@ -94,13 +95,18 @@ exports.voteComplaint = asyncHandler(async (req, res) => {
   
     const updatedComplaint = await complaint.save();
     res.json(updatedComplaint);
+  } catch (error) {
+      
+
+  }  
+  
   });
   
   // @desc    Mark complaint as resolved
   // @route   PUT /api/complaints/:id/resolve
   // @access  Private
   exports.resolveComplaint = asyncHandler(async (req, res) => {
-    const complaint = await Complaint.findById(req.params.id);
+    const complaint = await Complaints.findById(req.params.id);
   
     if (!complaint) {
       res.status(404);
@@ -133,7 +139,7 @@ exports.voteComplaint = asyncHandler(async (req, res) => {
     // Get complaints from the last 30 days
     const thirtyDaysAgo = new Date(Date.now() - 30 * 24 * 60 * 60 * 1000);
     
-    const complaints = await Complaint.find({
+    const complaints = await Complaints.find({
       flatCode: req.user.flatCode,
       createdAt: { $gte: thirtyDaysAgo },
     }).populate('createdBy', 'name');

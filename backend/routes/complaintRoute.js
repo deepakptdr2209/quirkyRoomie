@@ -10,8 +10,8 @@ const authMiddleware = require('../middleware/authMiddleware');
 const router = express.Router();
 
 router.route('/')
-  .get(protect, getComplaints)
-  .post(protect, createComplaint); // Create a new complaint & Get all complaints
+  .get(authMiddleware, getComplaints)
+  .post(authMiddleware, createComplaint); // Create a new complaint & Get all complaints
 
 router.put('/:id/vote',authMiddleware,voteComplaint ); // Upvote or downvote a complaint
 
