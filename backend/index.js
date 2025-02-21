@@ -11,11 +11,10 @@ app.use(cors());
 app.use(express.json()); 
 app.use(express.urlencoded({ extended: true }));
 // route for signup and login
-app.use("/api/auth", authRoute);
+app.use("/api/users", authRoute);
 // complaint route
 app.use('/api/complaint', complaintRoute);
 // voting route
-app.use('/api/votes', voteRoute )
 
 const startServer = async () => {
     try {

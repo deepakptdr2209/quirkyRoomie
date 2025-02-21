@@ -3,9 +3,8 @@ const jwt = require('jsonwebtoken');
 const { jwtSecret, jwtExpiration } = require('../config/jwtConfig');
 
 const User = require('../models/User');
-
+ // Signup controller
 exports.signup = async (req, res) => {
-    console.log(req.body); // Debugging line
     if (!req.body) {
         return res.status(400).json({ error: 'Request body is missing' });
     }
@@ -22,12 +21,23 @@ exports.signup = async (req, res) => {
             password: hashedPassword,
             flatcode
         });
-        await newUser.save();
-        const token = jwt.sign(
-            { userId : newUser._id},
-              jwtSecret, 
-            { expiresIn : jwtExpiration});
-            res.status(201).json({token});
+          const user = await newUser.save();
+          if(user){
+            const token = jwt.sign(
+                { userId : user._id},
+                  jwtSecret, 
+                { expiresIn : jwtExpiration});
+            
+                res.status(201).json({
+                userId: user._id,
+                username: user.username,
+                email: user.email,
+                flatcode: user.flatcode,
+                karmaPoints: user.karmaPoints,
+                token: token
+            })
+          }
+      
     } catch (error) {
         if (error.code === 11000) {
             return res.status(400).json({ message: "User with this name already exists in this flat." });
@@ -36,7 +46,7 @@ exports.signup = async (req, res) => {
         res.status(500).json({ message: "Internal Server Error" });
     }
 }
-
+  // Login controller
 exports.login = async (req, res) => {
     const { email, password } = req.body;
     try {
@@ -53,8 +63,37 @@ exports.login = async (req, res) => {
             jwtSecret,
             { expiresIn: jwtExpiration }
         );
-        res.status(200).json({ token });
+        res.status(200).json({ 
+            userId: user._id,
+            username: user.username,
+            email: user.email,
+            flatcode: user.flatcode,
+            karmaPoints: user.karmaPoints,
+            token: token
+         });
     } catch (error) {
         res.status(500).json({ message: 'Internal server error' });
     }
 }
+
+// Profile controller
+
+ exports.profile = async (req, res) => {
+    try {
+        const user = await User.findById(req.user._id);
+        if (!user) {
+            return res.status(404).json({ message: "User not found" });
+        }
+        res.status(200).json({
+            userId: user._id,
+            username: user.username,
+            email: user.email,
+            flatcode: user.flatcode,
+            karmaPoints: user.karmaPoints
+        });
+
+    } catch (error){
+        console.error("Profile Error:", error);
+        res.status(500).json({ message: "Internal Server Error" });
+    }
+ }

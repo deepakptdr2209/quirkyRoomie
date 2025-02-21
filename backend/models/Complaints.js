@@ -1,45 +1,34 @@
-const mongoose = require('mongoose');
+import mongoose from 'mongoose';
 
-// Complaint Schema
 const complaintSchema = new mongoose.Schema({
   title: {
     type: String,
-    required: true
+    required: true,
   },
   description: {
     type: String,
-    required: true
+    required: true,
   },
-  complaintType: {
+  type: {
     type: String,
-    enum: ['Noise', 'Cleanliness', 'Bills', 'Pets', 'Other'], 
+    enum: ['Noise', 'Cleanliness', 'Bills', 'Pets', 'Other'],
+    required: true,
   },
   severity: {
     type: String,
-    enum: ['Mild', 'Annoying', 'Major', 'Nuclear'], 
-    required: true
+    enum: ['Mild', 'Annoying', 'Major', 'Nuclear'],
+    required: true,
   },
-  
-  flatcode: {
-    type: String, 
-    required: true
-  },
-  votes: {
-    upvote: { type: Number, default: 0 },
-    downvote: { type: Number, default: 0 }
-  },
-  userId: {
-    type: mongoose.Schema.Types.ObjectId, 
-    ref: 'User', 
-    required: true
-  },
-  againstUserId: { 
+  createdBy: {
     type: mongoose.Schema.Types.ObjectId,
-    ref: 'User', 
-    required: true 
+    ref: 'User',
+    required: true,
   },
-   // Against whom the complaint is filed
-   upvotes: [{
+  flatCode: {
+    type: String,
+    required: true,
+  },
+  upvotes: [{
     type: mongoose.Schema.Types.ObjectId,
     ref: 'User',
   }],
@@ -55,12 +44,9 @@ const complaintSchema = new mongoose.Schema({
     type: String,
     default: null,
   },
-},
-{
-  timestamps: true
+}, {
+  timestamps: true,
 });
 
-
 const Complaint = mongoose.model('Complaint', complaintSchema);
-
-module.exports = Complaint;
+export default Complaint;

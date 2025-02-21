@@ -1,12 +1,22 @@
 const express = require('express');
-const { createComplaint, getComplaints, resolveComplaint, getTopComplaint } = require('../controllers/complaintController');
+const { 
+    createComplaint,
+     getComplaints,
+    voteComplaint,
+    resolveComplaint,
+    getLeaderboard} = require('../controllers/complaintController');
 const authMiddleware = require('../middleware/authMiddleware');
 
 const router = express.Router();
 
-router.post('/create',authMiddleware, createComplaint ); // File a complaint
-router.get('/:flatcode',authMiddleware, getComplaints); // Get all complaints for a flat
-router.put('/resolve/:complaintId',authMiddleware, resolveComplaint); // Resolve a complaint
-router.get('/top-complaint', getTopComplaint);
+router.route('/')
+  .get(protect, getComplaints)
+  .post(protect, createComplaint); // Create a new complaint & Get all complaints
+
+router.put('/:id/vote',authMiddleware,voteComplaint ); // Upvote or downvote a complaint
+
+router.put('/:id/resolve',authMiddleware,resolveComplaint ); // Resolve a complaint
+
+router.get('/leaderboard',authMiddleware,getLeaderboard ); // Get leaderboard
 
 module.exports = router;

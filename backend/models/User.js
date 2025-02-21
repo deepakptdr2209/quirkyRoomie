@@ -20,15 +20,14 @@ const userSchema = new mongoose.Schema({
         type: String,
         required: true
     },
-    createdAt: {
-        type: Date,
-        default: Date.now
-    },
+   
     karmaPoints: {
         type: Number,
         default: 0
     },
-});
+},
+    {timeStamps: true},
+);
 userSchema.index({ username: 1, flatcode: 1 }, { unique: true });
 
 
