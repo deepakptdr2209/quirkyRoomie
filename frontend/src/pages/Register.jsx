@@ -4,6 +4,7 @@ import { useNavigate, Link } from 'react-router-dom';
 import { toast } from 'react-toastify';
 import { UserPlus, User, Lock, Home } from 'lucide-react';
 import { setCredentials } from '../reduxStore/slices/AuthSlice';
+import { registerUser } from '../lib/api';
 
 const Register = () => {
   const [formData, setFormData] = useState({
@@ -19,14 +20,7 @@ const Register = () => {
     e.preventDefault();
     try {
       // TODO: Replace with actual API call
-      const response = {
-        user: {
-          id: '1',
-          ...formData,
-          karmaPoints: 0,
-        },
-        token: 'dummy-token',
-      };
+      const response = await registerUser(formData.name, formData.email, formData.password, formData.flatCode);
       dispatch(setCredentials(response));
       navigate('/');
     } catch (error) {

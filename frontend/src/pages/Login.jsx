@@ -4,6 +4,8 @@ import { useNavigate, Link } from 'react-router-dom';
 import { toast } from 'react-toastify';
 import { LogIn, User, Lock } from 'lucide-react';
 import { setCredentials } from '../reduxStore/slices/AuthSlice';
+import { loginUser } from '../lib/api';
+
 
 const Login = () => {
   const [email, setEmail] = useState('');
@@ -15,7 +17,8 @@ const Login = () => {
     e.preventDefault();
     try {
       // TODO: Replace with actual API call
-      const response = { user: { id: '1', email, name: 'Test User', flatCode: 'FLAT123', karmaPoints: 0 }, token: 'dummy-token' };
+      const response = await loginUser(email, password) 
+    
       dispatch(setCredentials(response));
       navigate('/');
     } catch (error) {
